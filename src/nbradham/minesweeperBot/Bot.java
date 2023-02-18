@@ -9,7 +9,11 @@ final class Bot {
 	}
 
 	private void solve() {
-		//TODO solve.
+		System.out.println("Starting board:");
+		game.printBoard();
+		System.out.println("Starting reveal (1,1):");
+		game.reveal(1,1);
+		game.printBoard();
 	}
 
 	public static final void main(String[] args) {
