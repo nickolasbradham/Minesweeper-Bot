@@ -50,7 +50,6 @@ final class Game {
 		ArrayList<int[]> revealArr = new ArrayList<>();
 
 		board[x][y].revealed = true;
-		revealArr.add(new int[] { x, y });
 
 		if (board[x][y].bomb) {
 			state = State.FAILED;
@@ -62,11 +61,13 @@ final class Game {
 			for (int ry = Math.max(y - 1, 0); ry <= ey; ry++)
 				board[x][y].count += board[rx][ry].bomb ? 1 : 0;
 
-		if (board[x][y].count == 0)
+		if (board[x][y].count == 0) {
 			for (int rx = Math.max(x - 1, 0); rx <= ex; rx++)
 				for (int ry = Math.max(y - 1, 0); ry <= ey; ry++)
 					if (!board[rx][ry].revealed)
 						revealArr.addAll(reveal(rx, ry));
+		}else
+			revealArr.add(new int[] { x, y });
 		
 		for (Cell[] row : board)
 			for (Cell c : row)
