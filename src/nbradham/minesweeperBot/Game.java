@@ -1,11 +1,16 @@
 package nbradham.minesweeperBot;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 final class Game {
+	
+	static enum State{PLAYING, FAILED, WON};
 
 	private final Cell[][] board;
 	private final byte bombs;
+	
+	private State state = State.PLAYING;
 	private boolean first = true;
 
 	Game(byte width, byte height, byte numBombs) {
@@ -28,7 +33,7 @@ final class Game {
 		}
 	}
 
-	final boolean reveal(int x, int y) {
+	final ArrayList<int[]> reveal(int x, int y) {
 		if (first) {
 			Random rand = new Random();
 			for (byte n = 0; n < bombs; n++) {
@@ -42,10 +47,15 @@ final class Game {
 			first = false;
 		}
 
-		board[x][y].revealed = true;
+		ArrayList<int[]> revealArr = new ArrayList<>();
 
-		if (board[x][y].bomb)
-			return false;
+		board[x][y].revealed = true;
+		revealArr.add(new int[] { x, y });
+
+		if (board[x][y].bomb) {
+			state = State.FAILED;
+			return new ArrayList<>();
+		}
 
 		int ex = Math.min(x + 1, board.length - 1), ey = Math.min(y + 1, board[0].length - 1);
 		for (int rx = Math.max(x - 1, 0); rx <= ex; rx++)
@@ -56,8 +66,19 @@ final class Game {
 			for (int rx = Math.max(x - 1, 0); rx <= ex; rx++)
 				for (int ry = Math.max(y - 1, 0); ry <= ey; ry++)
 					if (!board[rx][ry].revealed)
-						reveal(rx, ry);
-		return true;
+						revealArr.addAll(reveal(rx, ry));
+		
+		for (Cell[] row : board)
+			for (Cell c : row)
+				if(!c.revealed && !c.bomb)
+					return revealArr;
+		
+		state = State.WON;
+		return new ArrayList<>();
+	}
+	
+	final State getState() {
+		return state;
 	}
 
 	private static final class Cell {
