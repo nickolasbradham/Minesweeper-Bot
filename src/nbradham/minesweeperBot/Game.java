@@ -28,7 +28,7 @@ final class Game {
 				System.out.print((c.revealed ? c.count : c.flagged ? "F" : " ") + "|");
 			System.out.println();
 			for (byte n = 0; n < row.length; n++)
-				System.out.print("-|");
+				System.out.print("-+");
 			System.out.println();
 		}
 	}
@@ -78,8 +78,32 @@ final class Game {
 		return new ArrayList<>();
 	}
 	
+	final void flag(int x, int y) {
+		board[x][y].flagged = true;
+	}
+	
 	final State getState() {
 		return state;
+	}
+	
+	final byte getCount(int x, int y) {
+		return board[x][y].count;
+	}
+	
+	final int getWidth() {
+		return board.length;
+	}
+	
+	final int getHeight() {
+		return board[0].length;
+	}
+	
+	final boolean isRevealed(int x, int y) {
+		return board[x][y].revealed;
+	}
+	
+	final boolean isFlagged(int x, int y) {
+		return board[x][y].flagged;
 	}
 
 	private static final class Cell {
