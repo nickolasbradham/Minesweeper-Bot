@@ -111,24 +111,72 @@ final class Game {
 		}
 	}
 
+	/**
+	 * If tile ({@code x}, {@code y}) is revealed, gives the displayed number, else
+	 * returns -1.
+	 * 
+	 * @param x The x coordinate.
+	 * @param y The y coordinate.
+	 * @return The mine count of the tile or {@code -1} if that tile isn't revealed.
+	 */
 	int getMineCount(int x, int y) {
 		if (isRevealed(x, y))
 			return field[x][y].count;
 		return -1;
 	}
 
+	/**
+	 * Retrieves all revealed tiles with adjacent mines.
+	 * 
+	 * @return The retrieved tiles' coordinates.
+	 */
+	int[][] getHints() {
+		ArrayList<int[]> hints = new ArrayList<>();
+		for (byte x = 0; x < field.length; ++x)
+			for (byte y = 0; y < field[x].length; ++y)
+				if (field[x][y].revealed && field[x][y].count != 0)
+					hints.add(new int[] { x, y });
+		return hints.toArray(new int[0][]);
+	}
+
+	/**
+	 * Checks if ({@code x}, {@code y}) is hidden.
+	 * 
+	 * @param x The x coordinate.
+	 * @param y The y coordinate.
+	 * @return True if that tile is hidden.
+	 */
 	boolean isHidden(int x, int y) {
 		return !isRevealed(x, y);
 	}
 
+	/**
+	 * Checks if ({@code x}, {@code y}) is revealed.
+	 * 
+	 * @param x The x coordinate.
+	 * @param y The y coordinate.
+	 * @return True if that tile is revealed.
+	 */
 	boolean isRevealed(int x, int y) {
 		return field[x][y].revealed;
 	}
 
+	/**
+	 * Checks if ({@code x}, {@code y}) is flagged.
+	 * 
+	 * @param x The x coordinate.
+	 * @param y The y coordinate.
+	 * @return True if that tile is flagged.
+	 */
 	boolean isFlagged(int x, int y) {
 		return field[x][y].flag;
 	}
 
+	/**
+	 * Checks if the game is over.
+	 * 
+	 * @return True if the game is stopped.
+	 */
 	boolean isGameOver() {
 		for (Tile[] c : field)
 			for (Tile t : c)
@@ -140,18 +188,41 @@ final class Game {
 		return true;
 	}
 
+	/**
+	 * Retrieves the width of the field.
+	 * 
+	 * @return The width of the field.
+	 */
 	int getWidth() {
 		return field.length;
 	}
 
+	/**
+	 * Retrieves the height of the field.
+	 * 
+	 * @return The height of the field.
+	 */
 	int getHeight() {
 		return field[0].length;
 	}
 
+	/**
+	 * Flags a tile.
+	 * 
+	 * @param x The x coordinate.
+	 * @param y The y coordinate.
+	 */
 	void flag(int x, int y) {
 		field[x][y].flag = isHidden(x, y);
 	}
 
+	/**
+	 * Checks if {@code test} coordinates are not present in {@code cords}.
+	 * 
+	 * @param cords The Queue to check.
+	 * @param test  The coordinates to find.
+	 * @return True if {@code test} coordinates does not exist in {@code cords}.
+	 */
 	private static boolean isUnique(Queue<int[]> cords, int[] test) {
 		for (int[] set : cords)
 			if (set[0] == test[0] && set[1] == test[1])
@@ -159,10 +230,23 @@ final class Game {
 		return true;
 	}
 
+	/**
+	 * Checks if a is farther than one away from b.
+	 * 
+	 * @param a The first number.
+	 * @param b The second number.
+	 * @return True if |a - b| > 1.
+	 */
 	private static boolean isFartherThanOne(int a, int b) {
 		return Math.abs(a - b) > 1;
 	}
 
+	/**
+	 * Holds info about a single tile.
+	 * 
+	 * @author Nickolas S. Bradham
+	 *
+	 */
 	private static final class Tile {
 		byte count;
 		boolean mine, revealed, flag;
